@@ -72,3 +72,30 @@ X = vectorizer.fit_transform(patterns)
 y = tags
 clf.fit(X,y)
 
+def chatbot(input_test):
+    X_test = vectorizer.transform([input_test])
+    tag = clf.predict(X_test)[0]
+    for intent in intents:
+        if intent['tag'] == tag:
+            return random.choice(intent['responses'])
+        
+counter = 0
+
+def main():
+    global counter
+    st.title("ChatBot")
+    st.write("Welcome to the chatbot. Please type a message and press Enter to start the conversation.")
+
+    counter+=1
+    user_input = st.text_input('You:',key=f"user_input_{counter}")
+
+    if user_input:
+        response = chatbot(user_input)
+        st.text_area("ChatBot:",value=response,height=100,max_chars=None,key=f"chatbot_response_{counter}")
+        
+        if response.lower() in ['goodbye','bye']:
+            st.write("Thank you for chatting with me. Have a great day!")
+            st.stop()
+
+if __name__ == '__main__':
+    main()
